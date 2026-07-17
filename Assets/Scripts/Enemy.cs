@@ -5,6 +5,10 @@ public class Enemy : MonoBehaviour
     [SerializeField] float moveSpeed = 3f;
     private Vector3 targetRot;
     [SerializeField] private float rotSpeed = 20f;
+    [SerializeField] int hp = 2;
+    [SerializeField] float invincibleTimeMax = 0.5f;
+    float invincibleTime = 0;
+    [SerializeField] float knockbackSpeed = 5;
 
     Rigidbody rb;
     Animator animetor;
@@ -21,6 +25,11 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // 無敵時間を減らす
+        if(invincibleTime > 0)
+        {
+            invincibleTime -= Time.deltaTime;
+        }
         var direction = playerCollider.bounds.center - rb.position;
 
         bool isSeenPlayer = true;
@@ -30,7 +39,7 @@ public class Enemy : MonoBehaviour
                 isSeenPlayer = false;
             }
         }
-        if (playerCollider != null && isSeenPlayer)
+        if (playerCollider != null && isSeenPlayer && invincibleTime <= 0)
         {
             var subVec = playerCollider.bounds.center - rb.position;
             subVec.y = 0;
@@ -46,5 +55,24 @@ public class Enemy : MonoBehaviour
             float mag = rb.linearVelocity.magnitude;
             animetor.SetFloat("Speed", mag);
         }   
+    }
+
+    void OnCollisionStay(Collision collision)
+    {
+        var attacObj = collision.gameObject.GetComponent<AttackOnject>();
+        if(attacObj != null && invincibleTime <= 0)
+        {
+            hp -= attacObj.power;
+            invincibleTime = invincibleTimeMax;
+            if(hp <= 0)
+            {
+                Destroy(gameObject);
+            }
+               // ノックバック
+            var dir = transform.position - collision.transform.position;
+            dir.y = 0;
+            var knockbackVec = dir.normalized * knockbackSpeed;
+            rb.linearVelocity = knockbackVec;
+        }
     }
 }
