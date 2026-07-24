@@ -3,7 +3,7 @@ using UnityEngine.Rendering;
 
 public class AttackOnject : MonoBehaviour
 {
-    [SerializeField] public int power = 1;
+    [SerializeField] public int power = 10;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

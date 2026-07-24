@@ -1,27 +1,32 @@
-using Cysharp.Threading.Tasks.Triggers;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
+using R3;
 
 public class Player : MonoBehaviour
 {
+    //-----移動-----
     //[SerializeField] private float speed = 0f;
     [SerializeField] private float acceleration = 0f;
     Vector2 inputVer;
     [SerializeField] private float rotSpeed = 20f; 
     private Vector3 targetRot;
 
+    //-----ジャンプ-----
     [SerializeField] float jumpForce = 12f;
     [SerializeField] bool isGrounded = false;
     [SerializeField] float groundNomalyze = 0.7f;
     [SerializeField] float airDanping = 0.2f;
     [SerializeField] float groundDanping = 8f;
 
+    //-----攻撃-----
     [SerializeField] GameObject firePrefab;
     [SerializeField] Vector3 offset;
     [SerializeField] float fireSpeed;
 
-     [SerializeField] int hp = 2;
+    //-----Life-----
+    //[SerializeField] int hp = 2;
+    //public float MaxLife => 100;
+    public ReactiveProperty<float> life { get; private set; } = new();
     [SerializeField] float invincibleTimeMax = 0.5f;
     float invincibleTime = 0;
     [SerializeField] float knockbackSpeed = 5;
@@ -70,6 +75,7 @@ public class Player : MonoBehaviour
         animetor = GetComponentInChildren<Animator>();
         rb.sleepThreshold = -1;
         rb.linearDamping = groundDanping;
+        life.Value = 100f;
     }
 
     private void FixedUpdate()
@@ -130,9 +136,10 @@ public class Player : MonoBehaviour
         var attacObj = collision.gameObject.GetComponent<AttackOnject>();
         if(attacObj != null && invincibleTime <= 0)
         {
-            hp -= attacObj.power;
+            //hp -= attacObj.power;
+            life.Value -= attacObj.power;
             invincibleTime = invincibleTimeMax;
-            if(hp <= 0)
+            if(life.Value <= 0)
             {
                 Destroy(gameObject);
             }

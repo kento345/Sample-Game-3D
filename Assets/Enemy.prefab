@@ -428,7 +428,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f56e7642bef9eb47a27f9efedb5ea0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackOnject
-  power: 1
+  power: 10
 --- !u!1 &7755218406704863079
 GameObject:
   m_ObjectHideFlags: 0
