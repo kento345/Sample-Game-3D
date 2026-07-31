@@ -15,6 +15,8 @@ public class Enemy : MonoBehaviour
 
     public Collider playerCollider { get;set; }
 
+    public GameManager manager {  get; set; }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -51,7 +53,11 @@ public class Enemy : MonoBehaviour
             transform.up = Vector3.up;
             transform.forward = Vector3.Slerp(fowerd, targetRot, rotSpeed * Time.deltaTime);
 
-            rb.linearVelocity = subVec.normalized * moveSpeed;
+            Vector3 velocity = subVec.normalized * moveSpeed;
+            velocity.y = rb.linearVelocity.y;
+
+            rb.linearVelocity = velocity;
+            //rb.linearVelocity = subVec.normalized * moveSpeed;
             float mag = rb.linearVelocity.magnitude;
             animetor.SetFloat("Speed", mag);
         }   
@@ -67,6 +73,7 @@ public class Enemy : MonoBehaviour
             if(hp <= 0)
             {
                 Destroy(gameObject);
+                manager.AddScore(1);
             }
                // ノックバック
             var dir = transform.position - collision.transform.position;

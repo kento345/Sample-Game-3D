@@ -7,18 +7,11 @@ public class EnemyManager : MonoBehaviour
     [SerializeField] Collider playerCollider;
     [SerializeField] GameObject enemy;
     [SerializeField] List<Enemy> enemies = new();
+    [SerializeField] GameManager manager;
 
     private void OnEnable()
     {
-        while(enemies.Count < 10) {
-            var obj = Instantiate(enemy, new Vector3(Random.Range(-6, 75), -10, Random.Range(16, -22)), Quaternion.identity);
-            Enemy e = obj.GetComponent<Enemy>();
-            enemies.Add(e);
-        }
-        foreach (Enemy enemy in enemies)
-        {
-            enemy.playerCollider = playerCollider;
-        }
+        InitilizeEnemy();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -31,11 +24,21 @@ public class EnemyManager : MonoBehaviour
     void Update()
     {
         enemies.RemoveAll(e => e == null);
+       InitilizeEnemy();
+    }
+
+    void InitilizeEnemy()
+    {
         while (enemies.Count < 10)
         {
             var obj = Instantiate(enemy, new Vector3(Random.Range(-6, 75), -10, Random.Range(16, -22)), Quaternion.identity);
             Enemy e = obj.GetComponent<Enemy>();
             enemies.Add(e);
+        }
+        foreach (Enemy enemy in enemies)
+        {
+            enemy.playerCollider = playerCollider;
+            enemy.manager = manager;
         }
     }
 }
